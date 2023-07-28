@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ToDo Compose App</string>
+
+    <string name="add_button">Add Button</string>
 </resources>
