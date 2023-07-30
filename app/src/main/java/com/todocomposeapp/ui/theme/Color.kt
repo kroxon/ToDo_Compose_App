@@ -14,6 +14,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Blue1 = Color(0XFF1565C0)
+val Blue2 = Color(0xFF698FBB)
 
 val LightGrey = Color(0XFFFCFCFC)
 val MediumGrey = Color(0XFF9C9C9C)
@@ -24,9 +25,13 @@ val MediumPriorityColor = Color(0XFFFFC114)
 val HighPriorityColor = Color(0xFFFF4646)
 val NonePriorityColor = Color(0xFFFFFFFF)
 
+val ColorScheme.fabContentColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.LightGray else Blue1
+
 val ColorScheme.topAppBarContentColor: Color
-@Composable
-get() = if (isSystemInDarkTheme()) Color.LightGray else Color.White
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.LightGray else Color.White
 
 val ColorScheme.topAppBarBackgroumdColor: Color
     @Composable
