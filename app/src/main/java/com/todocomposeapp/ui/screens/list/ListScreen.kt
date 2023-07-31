@@ -14,25 +14,39 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
 import com.todocomposeapp.R
 import com.todocomposeapp.ui.theme.fabContentColor
+import com.todocomposeapp.ui.viewmodels.SharedViewModel
+import com.todocomposeapp.util.SearchAppBarState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
-    navigateToTaskScreen: (Int) -> Unit
+    navigateToTaskScreen: (Int) -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
+    val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
+    val searchTextState: String by sharedViewModel.searchTextState
+
     Scaffold(
         topBar = {
-            ListAppBar()
+            ListAppBar(
+                sharedViewModel = sharedViewModel,
+                searchAppBarState = searchAppBarState,
+                searchTextState = searchTextState
+            )
         },
-        content = {},
+        content = {
+                  ListContent()
+        },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
         }
@@ -48,17 +62,11 @@ fun ListFab(
             onFabClicked(-1)
         },
         containerColor = MaterialTheme.colorScheme.fabContentColor
-        ) {
+    ) {
         Icon(
             imageVector = Icons.Rounded.Add,
             contentDescription = stringResource(id = R.string.add_button),
             tint = Color.White
         )
     }
-}
-
-@Composable
-@Preview
-private fun ListScreenPreview() {
-    ListScreen(navigateToTaskScreen = {})
 }
