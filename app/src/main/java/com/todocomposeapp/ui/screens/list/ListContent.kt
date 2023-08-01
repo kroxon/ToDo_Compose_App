@@ -31,19 +31,22 @@ import com.todocomposeapp.ui.theme.TASK_ITEM_ELEVATION
 import com.todocomposeapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.todocomposeapp.ui.theme.taskItemTextColor
 import com.todocomposeapp.ui.theme.taskItembackgroudColor
+import com.todocomposeapp.util.RequestState
 
 @Composable
 fun ListContent(
-    tasks: List<ToDoTask>,
+    tasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreens: (taskId: Int) -> Unit
 ) {
-    if (tasks.isEmpty())
-        EmptyContent()
-    else
-        DisplayTasks(
-            tasks = tasks,
-            navigateToTaskScreens = navigateToTaskScreens
-        )
+    if (tasks is RequestState.Succes) {
+        if (tasks.data.isEmpty())
+            EmptyContent()
+        else
+            DisplayTasks(
+                tasks = tasks.data,
+                navigateToTaskScreens = navigateToTaskScreens
+            )
+    }
 }
 
 @Composable
