@@ -2,6 +2,7 @@
     <string name="app_name">ToDo Compose App</string>
 
     <string name="sort_tasks">Sort Tasks</string>
+    <string name="no_tasks_found">No tasks were found.s</string>
     <string name="search_action">Search Tasks</string>
     <string name="add_button">Add Button</string>
     <string name="delete_all_actions">Delete All</string>
@@ -9,4 +10,5 @@
     <string name="search_placeholder">Search</string>
     <string name="search_icon">Search Icon</string>
     <string name="close_icon">Close Icon</string>
+    <string name="sad_icon">Sad Face Icon</string>
 </resources>

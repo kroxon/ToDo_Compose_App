@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,13 +28,46 @@ import com.todocomposeapp.data.models.ToDoTask
 import com.todocomposeapp.ui.theme.LARGE_PADDING
 import com.todocomposeapp.ui.theme.PRIORITY_INDICATOR_SIZE
 import com.todocomposeapp.ui.theme.TASK_ITEM_ELEVATION
+import com.todocomposeapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.todocomposeapp.ui.theme.taskItemTextColor
 import com.todocomposeapp.ui.theme.taskItembackgroudColor
 
 @Composable
-fun ListContent() {
-
+fun ListContent(
+    tasks: List<ToDoTask>,
+    navigateToTaskScreens: (taskId: Int) -> Unit
+) {
+    if (tasks.isEmpty())
+        EmptyContent()
+    else
+        DisplayTasks(
+            tasks = tasks,
+            navigateToTaskScreens = navigateToTaskScreens
+        )
 }
+
+@Composable
+fun DisplayTasks(
+    tasks: List<ToDoTask>,
+    navigateToTaskScreens: (taskId: Int) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.padding(top = TOP_APP_BAR_HEIGHT)
+    ) {
+        items(
+            items = tasks,
+            key = { task ->
+                task.id
+            }
+        ) { task ->
+            TaskItem(
+                toDoTask = task,
+                navigateToTaskScreens = navigateToTaskScreens
+            )
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +94,7 @@ fun TaskItem(
                     modifier = Modifier.weight(8f),
                     text = toDoTask.title,
                     color = MaterialTheme.colorScheme.taskItemTextColor,
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
