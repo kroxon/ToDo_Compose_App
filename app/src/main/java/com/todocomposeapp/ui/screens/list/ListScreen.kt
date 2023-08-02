@@ -14,11 +14,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -29,7 +33,9 @@ import com.todocomposeapp.R
 import com.todocomposeapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.todocomposeapp.ui.theme.fabContentColor
 import com.todocomposeapp.ui.viewmodels.SharedViewModel
+import com.todocomposeapp.util.Action
 import com.todocomposeapp.util.SearchAppBarState
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,12 +48,29 @@ fun ListScreen(
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
     }
+
+    val action by sharedViewModel.action
+
     val allTasks by sharedViewModel.allTasks.collectAsState()
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+//    sharedViewModel.handleDatabaseActions(action = action)
+
+    DisplaySnackbar(
+        titleTask = sharedViewModel.title.value,
+        handleDatabaseAction = { sharedViewModel.handleDatabaseActions(action = action) },
+        snackbarHostState = snackbarHostState,
+        action = action
+    )
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
         topBar = {
             ListAppBar(
                 sharedViewModel = sharedViewModel,
@@ -84,3 +107,48 @@ fun ListFab(
         )
     }
 }
+
+@Composable
+fun DisplaySnackbar(
+    titleTask: String,
+    handleDatabaseAction: () -> Unit,
+    snackbarHostState: SnackbarHostState,
+    action: Action
+) {
+    handleDatabaseAction()
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            scope.launch {
+                val snackBarResult = snackbarHostState.showSnackbar(
+                    message = "${action.name}: $titleTask",
+                    actionLabel = "OK"
+                )
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
