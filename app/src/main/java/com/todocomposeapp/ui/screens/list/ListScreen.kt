@@ -118,7 +118,10 @@ fun DisplaySnackbar(
         if (action != Action.NO_ACTION) {
             scope.launch {
                 val snackBarResult = snackbarHostState.showSnackbar(
-                    message = "${action.name}: $titleTask",
+                    message = setMessage(
+                        action = action,
+                        taskTitle = titleTask
+                    ),
                     actionLabel = setActionLabel(action)
                 )
                 undoDeleteTesk(
@@ -131,8 +134,15 @@ fun DisplaySnackbar(
     }
 }
 
+private fun setMessage(action: Action, taskTitle: String): String {
+    return when (action) {
+        Action.DELETE_ALL -> "All task removed."
+        else -> "${action.name}: $taskTitle "
+    }
+}
+
 private fun setActionLabel(action: Action): String {
-    return if (action == Action.UNDO) "UNDO" else "OK"
+    return if (action == Action.DELETE) "UNDO" else "OK"
 }
 
 private fun undoDeleteTesk(

@@ -2,6 +2,10 @@
     <string name="app_name">ToDo Compose App</string>
 
     <string name="title">Title</string>
+    <string name="delete_all_tasks_title_dialog">Remove all tasks?</string>
+    <string name="delete_all_tasks_confirmation">Are you sure you want to delete all tasks? It will not be possible to reverse the process.</string>
+    <string name="delete_task_title_dialog">Remove \'%1$s\'?</string>
+    <string name="delete_task_confirmation">Are you sure you want to remove \'%1$s\'?</string>
     <string name="description">Description</string>
     <string name="sort_tasks">Sort Tasks</string>
     <string name="add_task">Add Task</string>
@@ -20,4 +24,6 @@
     <string name="close_icon">Close Icon</string>
     <string name="sad_icon">Sad Face Icon</string>
     <string name="fields_empty">Empty fields.</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

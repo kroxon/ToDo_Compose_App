@@ -12,11 +12,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.todocomposeapp.R
+import com.todocomposeapp.components.DisplayAlertDialog
 import com.todocomposeapp.data.models.Priority
 import com.todocomposeapp.data.models.ToDoTask
 import com.todocomposeapp.ui.theme.topAppBarBackgroumdColor
@@ -114,10 +119,33 @@ fun ExistingTaskAppBar(
             containerColor = MaterialTheme.colorScheme.topAppBarBackgroumdColor,
         ),
         actions = {
-            DeleteAction(onDeleteClicked = navigateToListScreens)
-            UpdateAction(onUpdateClicked = navigateToListScreens)
+            ExistinTaskAppBarAction(
+                selectedTask = selectedTask,
+                navigateToListScreens = navigateToListScreens
+            )
         }
     )
+}
+
+@Composable
+fun ExistinTaskAppBarAction(
+    selectedTask: ToDoTask,
+    navigateToListScreens: (Action) -> Unit
+) {
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+    DisplayAlertDialog(
+        title = stringResource(id = R.string.delete_task_title_dialog, selectedTask.title),
+        message = stringResource(id = R.string.delete_task_confirmation, selectedTask.title),
+        openDialog = openDialog,
+        closeDialog = { openDialog = false },
+        onYesClicked = { navigateToListScreens(Action.DELETE) })
+
+    DeleteAction(onDeleteClicked = {
+        openDialog = true
+    })
+    UpdateAction(onUpdateClicked = navigateToListScreens)
 }
 
 @Composable
@@ -137,10 +165,10 @@ fun CloseAction(
 
 @Composable
 fun DeleteAction(
-    onDeleteClicked: (Action) -> Unit
+    onDeleteClicked: () -> Unit
 ) {
     IconButton(onClick = {
-        onDeleteClicked(Action.DELETE)
+        onDeleteClicked()
     }) {
         Icon(
             imageVector = Icons.Filled.Delete,
