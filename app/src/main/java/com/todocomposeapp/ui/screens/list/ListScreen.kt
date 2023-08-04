@@ -1,36 +1,26 @@
 package com.todocomposeapp.ui.screens.list
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
 import com.todocomposeapp.R
-import com.todocomposeapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.todocomposeapp.ui.theme.fabContentColor
 import com.todocomposeapp.ui.viewmodels.SharedViewModel
 import com.todocomposeapp.util.Action
@@ -42,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListScreen(
     navigateToTaskScreen: (Int) -> Unit,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
 ) {
 
     LaunchedEffect(key1 = true) {
@@ -52,6 +42,7 @@ fun ListScreen(
     val action by sharedViewModel.action
 
     val allTasks by sharedViewModel.allTasks.collectAsState()
+    val searchedTasks by sharedViewModel.searchTasks.collectAsState()
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
@@ -64,7 +55,10 @@ fun ListScreen(
         titleTask = sharedViewModel.title.value,
         handleDatabaseAction = { sharedViewModel.handleDatabaseActions(action = action) },
         snackbarHostState = snackbarHostState,
-        action = action
+        action = action,
+        onUndoClicked = {
+            sharedViewModel.action.value = it
+        }
     )
 
     Scaffold(
@@ -80,7 +74,9 @@ fun ListScreen(
         },
         content = {
             ListContent(
-                tasks = allTasks,
+                allTasks = allTasks,
+                searchAppBarState = searchAppBarState,
+                searchedTasks = searchedTasks,
                 navigateToTaskScreens = navigateToTaskScreen
             )
         },
@@ -110,6 +106,7 @@ fun ListFab(
 
 @Composable
 fun DisplaySnackbar(
+    onUndoClicked: (Action) -> Unit,
     titleTask: String,
     handleDatabaseAction: () -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -122,13 +119,32 @@ fun DisplaySnackbar(
             scope.launch {
                 val snackBarResult = snackbarHostState.showSnackbar(
                     message = "${action.name}: $titleTask",
-                    actionLabel = "OK"
+                    actionLabel = setActionLabel(action)
+                )
+                undoDeleteTesk(
+                    action = action,
+                    snackBarResult = snackBarResult,
+                    onUndoClicked = onUndoClicked
                 )
             }
         }
     }
 }
 
+private fun setActionLabel(action: Action): String {
+    return if (action == Action.UNDO) "UNDO" else "OK"
+}
+
+private fun undoDeleteTesk(
+    action: Action,
+    snackBarResult: SnackbarResult,
+    onUndoClicked: (Action) -> Unit
+) {
+    if (snackBarResult == SnackbarResult.ActionPerformed &&
+        action == Action.DELETE
+    )
+        onUndoClicked(Action.UNDO)
+}
 
 
 

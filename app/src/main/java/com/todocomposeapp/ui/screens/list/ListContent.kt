@@ -1,11 +1,9 @@
 package com.todocomposeapp.ui.screens.list
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,21 +30,44 @@ import com.todocomposeapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.todocomposeapp.ui.theme.taskItemTextColor
 import com.todocomposeapp.ui.theme.taskItembackgroudColor
 import com.todocomposeapp.util.RequestState
+import com.todocomposeapp.util.SearchAppBarState
 
 @Composable
 fun ListContent(
-    tasks: RequestState<List<ToDoTask>>,
-    navigateToTaskScreens: (taskId: Int) -> Unit
+    allTasks: RequestState<List<ToDoTask>>,
+    searchedTasks: RequestState<List<ToDoTask>>,
+    navigateToTaskScreens: (taskId: Int) -> Unit,
+    searchAppBarState: SearchAppBarState
 ) {
-    if (tasks is RequestState.Succes) {
-        if (tasks.data.isEmpty())
-            EmptyContent()
-        else
-            DisplayTasks(
-                tasks = tasks.data,
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Succes) {
+            HandleListContent(
+                tasks = searchedTasks.data,
                 navigateToTaskScreens = navigateToTaskScreens
             )
+        }
+    } else {
+        if (allTasks is RequestState.Succes) {
+            HandleListContent(
+                tasks = allTasks.data,
+                navigateToTaskScreens = navigateToTaskScreens
+            )
+        }
     }
+}
+
+@Composable
+fun HandleListContent(
+    tasks: List<ToDoTask>,
+    navigateToTaskScreens: (taskId: Int) -> Unit
+) {
+    if (tasks.isEmpty())
+        EmptyContent()
+    else
+        DisplayTasks(
+            tasks = tasks,
+            navigateToTaskScreens = navigateToTaskScreens
+        )
 }
 
 @Composable

@@ -9,6 +9,7 @@ import com.todocomposeapp.data.ToDoRepository
 import com.todocomposeapp.data.models.Priority
 import com.todocomposeapp.data.models.ToDoTask
 import com.todocomposeapp.util.Action
+import com.todocomposeapp.util.Constants.MAX_TITLE_LENGHT
 import com.todocomposeapp.util.RequestState
 import com.todocomposeapp.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,8 +38,25 @@ class SharedViewModel @Inject constructor(
 
     val searchTextState: MutableState<String> = mutableStateOf("")
 
-    private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    private val _searchTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    val searchTasks: StateFlow<RequestState<List<ToDoTask>>> = _searchTasks
 
+    fun searchDatabase(searchQuerry: String) {
+        _searchTasks.value = RequestState.Loading
+
+        try {
+            viewModelScope.launch {
+                repository.searchDatabase(searchQuery = "%$searchQuerry%").collect{searchedTasks ->
+                    _searchTasks.value = RequestState.Succes(searchedTasks)
+                }
+            }
+        } catch (e: Exception) {
+            _searchTasks.value = RequestState.Error(e)
+        }
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
+
+    private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
     val allTasks: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
 
     fun getAllTasks() {
@@ -74,6 +93,31 @@ class SharedViewModel @Inject constructor(
             )
             repository.addTask(toDoTask)
         }
+        searchAppBarState.value = SearchAppBarState.CLOSED
+    }
+
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDoTask = ToDoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.updateTask(toDoTask)
+        }
+    }
+
+    private fun deleteTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDoTask = ToDoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.deleteTask(toDoTask)
+        }
     }
 
     fun handleDatabaseActions(action: Action) {
@@ -83,7 +127,7 @@ class SharedViewModel @Inject constructor(
             }
 
             Action.DELETE -> {
-
+                deleteTask()
             }
 
             Action.DELETE_ALL -> {
@@ -91,11 +135,11 @@ class SharedViewModel @Inject constructor(
             }
 
             Action.UNDO -> {
-
+                addTask()
             }
 
             Action.UPDATE -> {
-
+                updateTask()
             }
 
             else -> {
@@ -120,7 +164,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun updateTitle(newString: String) {
-        if (newString.length < 20)
+        if (newString.length < MAX_TITLE_LENGHT)
             title.value = newString
     }
 
