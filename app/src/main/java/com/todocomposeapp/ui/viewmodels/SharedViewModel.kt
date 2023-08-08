@@ -4,26 +4,28 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Insert
-import com.todocomposeapp.data.ToDoRepository
+import com.todocomposeapp.data.repositories.ToDoRepository
 import com.todocomposeapp.data.models.Priority
 import com.todocomposeapp.data.models.ToDoTask
+import com.todocomposeapp.data.repositories.DataStroreRepository
 import com.todocomposeapp.util.Action
 import com.todocomposeapp.util.Constants.MAX_TITLE_LENGHT
 import com.todocomposeapp.util.RequestState
 import com.todocomposeapp.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val repository: ToDoRepository
+    private val repository: ToDoRepository,
+    private val dataStroreRepository: DataStroreRepository
 ) : ViewModel() {
 
     val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
@@ -46,14 +48,55 @@ class SharedViewModel @Inject constructor(
 
         try {
             viewModelScope.launch {
-                repository.searchDatabase(searchQuery = "%$searchQuerry%").collect{searchedTasks ->
-                    _searchTasks.value = RequestState.Succes(searchedTasks)
-                }
+                repository.searchDatabase(searchQuery = "%$searchQuerry%")
+                    .collect { searchedTasks ->
+                        _searchTasks.value = RequestState.Success(searchedTasks)
+                    }
             }
         } catch (e: Exception) {
             _searchTasks.value = RequestState.Error(e)
         }
         searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
+
+    private val _sortState = MutableStateFlow<RequestState<Priority>>(RequestState.Idle)
+
+    val sortState: StateFlow<RequestState<Priority>> = _sortState
+
+    val lowPriorityTasks: StateFlow<List<ToDoTask>> =
+        repository.sortByLowPriority.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            emptyList()
+        )
+
+    val highPriorityTasks: StateFlow<List<ToDoTask>> =
+        repository.sortByHighPriority.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            emptyList()
+        )
+
+    fun readSortState() {
+        _sortState.value = RequestState.Loading
+
+        try {
+            viewModelScope.launch {
+                dataStroreRepository.readSortState
+                    .map { Priority.valueOf(it) }
+                    .collect {
+                        _sortState.value = RequestState.Success(it)
+                    }
+            }
+        } catch (e: Exception) {
+            _sortState.value = RequestState.Error(e)
+        }
+    }
+
+    fun persistSortState(priority: Priority) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStroreRepository.persistSortState(priority = priority)
+        }
     }
 
     private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
@@ -65,7 +108,7 @@ class SharedViewModel @Inject constructor(
         try {
             viewModelScope.launch {
                 repository.getAllTasks.collect {
-                    _allTasks.value = RequestState.Succes(it)
+                    _allTasks.value = RequestState.Success(it)
                 }
             }
         } catch (e: Exception) {
@@ -126,7 +169,7 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-            fun handleDatabaseActions(action: Action) {
+    fun handleDatabaseActions(action: Action) {
         when (action) {
             Action.ADD -> {
                 addTask()
