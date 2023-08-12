@@ -1,4 +1,4 @@
-package com.todocomposeapp.data.repositories
+package com.todocomposeapp.components.data.repositories
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -10,7 +10,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.todocomposeapp.data.models.Priority
+import com.todocomposeapp.components.data.models.Priority
 import com.todocomposeapp.util.Constants.PREFERENCE_KEY
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.catch

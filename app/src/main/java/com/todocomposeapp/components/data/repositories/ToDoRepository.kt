@@ -1,7 +1,7 @@
-package com.todocomposeapp.data.repositories
+package com.todocomposeapp.components.data.repositories
 
-import com.todocomposeapp.data.ToDoDao
-import com.todocomposeapp.data.models.ToDoTask
+import com.todocomposeapp.components.data.ToDoDao
+import com.todocomposeapp.components.data.models.ToDoTask
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.todocomposeapp.data
+package com.todocomposeapp.components.data
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,7 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.todocomposeapp.data.models.ToDoTask
+import com.todocomposeapp.components.data.models.ToDoTask
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -4,10 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.todocomposeapp.data.repositories.ToDoRepository
-import com.todocomposeapp.data.models.Priority
-import com.todocomposeapp.data.models.ToDoTask
-import com.todocomposeapp.data.repositories.DataStroreRepository
+import com.todocomposeapp.components.data.repositories.ToDoRepository
+import com.todocomposeapp.components.data.models.Priority
+import com.todocomposeapp.components.data.models.ToDoTask
+import com.todocomposeapp.components.data.repositories.DataStroreRepository
 import com.todocomposeapp.util.Action
 import com.todocomposeapp.util.Constants.MAX_TITLE_LENGHT
 import com.todocomposeapp.util.RequestState
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(
+class   SharedViewModel @Inject constructor(
     private val repository: ToDoRepository,
     private val dataStroreRepository: DataStroreRepository
 ) : ViewModel() {

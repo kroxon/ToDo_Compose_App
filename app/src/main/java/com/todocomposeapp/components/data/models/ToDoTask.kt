@@ -1,4 +1,4 @@
-package com.todocomposeapp.data.models
+package com.todocomposeapp.components.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

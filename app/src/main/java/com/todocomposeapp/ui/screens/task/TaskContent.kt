@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.todocomposeapp.R
 import com.todocomposeapp.components.PriorityDropDown
-import com.todocomposeapp.data.models.Priority
+import com.todocomposeapp.components.data.models.Priority
 import com.todocomposeapp.ui.theme.LARGE_PADDING
 import com.todocomposeapp.ui.theme.MEDIUM_PADDING
 import com.todocomposeapp.ui.theme.TOP_APP_BAR_HEIGHT

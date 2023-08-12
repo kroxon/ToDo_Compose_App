@@ -3,7 +3,7 @@ package com.todocomposeapp.navigation
 import androidx.navigation.NavHostController
 import com.todocomposeapp.util.Action
 import com.todocomposeapp.util.Constants.LIST_SCREEN
-//import com.todocomposeapp.util.Constants.SPLASH_SCREEN
+import com.todocomposeapp.util.Constants.SPLASH_SCREEN
 
 class Screens(navController: NavHostController) {
 //    val splashScreen: () -> Unit = {

@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.todocomposeapp.data.models.Priority
+import com.todocomposeapp.components.data.models.Priority
 import com.todocomposeapp.ui.theme.LARGE_PADDING
 import com.todocomposeapp.ui.theme.MEDIUM_PADDING
 import com.todocomposeapp.ui.theme.PRIORITY_INDICATOR_SIZE

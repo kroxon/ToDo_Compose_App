@@ -45,8 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.todocomposeapp.R
-import com.todocomposeapp.data.models.Priority
-import com.todocomposeapp.data.models.ToDoTask
+import com.todocomposeapp.components.data.models.Priority
+import com.todocomposeapp.components.data.models.ToDoTask
 import com.todocomposeapp.ui.theme.HighPriorityColor
 import com.todocomposeapp.ui.theme.LARGE_PADDING
 import com.todocomposeapp.ui.theme.PRIORITY_INDICATOR_SIZE

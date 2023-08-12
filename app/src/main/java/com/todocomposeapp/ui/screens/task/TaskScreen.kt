@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.todocomposeapp.R
-import com.todocomposeapp.data.models.Priority
-import com.todocomposeapp.data.models.ToDoTask
+import com.todocomposeapp.components.data.models.Priority
+import com.todocomposeapp.components.data.models.ToDoTask
 import com.todocomposeapp.navigation.Screens
 import com.todocomposeapp.ui.theme.topAppBarBackgroumdColor
 import com.todocomposeapp.ui.theme.topAppBarContentColor
