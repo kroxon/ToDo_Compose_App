@@ -13,7 +13,6 @@ import com.todocomposeapp.util.Constants.LIST_ARGUMENT_KEY
 import com.todocomposeapp.util.Constants.LIST_SCREEN
 import com.todocomposeapp.util.toAction
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     sharedViewModel: SharedViewModel

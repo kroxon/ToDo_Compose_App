@@ -28,7 +28,6 @@ import com.todocomposeapp.util.SearchAppBarState
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
     navigateToTaskScreen: (Int) -> Unit,
